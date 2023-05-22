@@ -1,5 +1,11 @@
 const client = require("./client");
-const { createUser } = require("./adapters/users");
+
+const {
+  createUser,
+  getUser,
+  getUserById,
+  getUserByUsername,
+} = require("./adapters/users");
 
 const {
   users,
@@ -12,9 +18,17 @@ async function dropTables() {
   // Drop all tables in order
   console.log("Dropping tables...");
   try {
-    await client.query(`DROP TABLE IF EXISTS users;`);
+    await client.query(
+      `
+        DROP TABLE IF EXISTS routine_activities;
+        DROP TABLE IF EXISTS routines;
+        DROP TABLE IF EXISTS activities;
+        DROP TABLE IF EXISTS users;
+      `
+    );
   } catch (error) {
-    console.log(error);
+    console.error("Error Dropping Table!");
+    throw error;
   }
 }
 
@@ -33,22 +47,22 @@ async function createTables() {
         id SERIAL PRIMARY KEY,
         creator_id INTEGER REFERENCES users(id),
         is_public BOOLEAN DEFAULT false,
-        name VARCHAR(255) UNIQUE NOT NULL
+        name VARCHAR(255) UNIQUE NOT NULL,
         goal TEXT NOT NULL
       );
 
       CREATE TABLE activities(
         id SERIAL PRIMARY KEY,
         name VARCHAR(255) UNIQUE NOT NULL,
-        description TEXT NOT NULL,
+        description TEXT NOT NULL
       );
 
       CREATE TABLE routine_activities(
         id SERIAL PRIMARY KEY,
-        routine_id INTEGER REFERENCES routines (id),
-        activity_id INTEGER REFERENCES activities (id),
-        duration INTEGER UNIQUE NOT NULL,
-        count INTEGER UNIQUE NOT NULL,
+        routine_id INTEGER UNIQUE REFERENCES routines (id),
+        activity_id INTEGER UNIQUE REFERENCES activities (id),
+        duration INTEGER,
+        count INTEGER
       )
     `);
   } catch (error) {
