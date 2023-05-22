@@ -38,8 +38,10 @@ async function populateTables() {
   // Seed tables with dummy data from seedData.js
   console.log("Populating tables...");
   try {
-    const user = await createUser({ username: "Maggie", password: 123456 });
-    console.log("User:", user);
+    for (const user of users) {
+      const createdUser = await createUser(user);
+      console.log("User: ", createdUser);
+    }
   } catch (error) {
     console.log(error);
   }

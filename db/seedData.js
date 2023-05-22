@@ -1,5 +1,9 @@
 // Create dummy data to seed into your DB
-const users = [];
+const users = [
+  { username: "Maggie", password: 12345678 },
+  { username: "Ali", password: 12345678 },
+];
+
 const activities = [];
 const routines = [];
 const routine_activities = [];
