@@ -15,4 +15,9 @@ async function createUser({ username, password }) {
   return user;
 }
 
+async function getUser(username, password) {}
+
+async function getUserById(id) {}
+
+async function getUserByUsername(username) {}
 module.exports = { createUser };
