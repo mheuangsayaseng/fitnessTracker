@@ -15,9 +15,35 @@ async function createUser({ username, password }) {
   return user;
 }
 
-async function getUser(username, password) {}
+async function getUser(username, password) {
+  const {
+    rows: []
+  }
+}
 
-async function getUserById(id) {}
+async function getUserById(id) {
+  const {
+    rows: [user],
+} = await client.query(
+  `SELECT id
+  FROM users
+  WHERE id=${id}
+ `
+)
+return user;
+}
 
-async function getUserByUsername(username) {}
+async function getUserByUsername(username) {
+  const {
+    rows: [user],
+  } = await client.query(
+    `SELECT *
+    FROM users
+    WHERE username=$1
+    `, [username]
+  );
+  return user;
+
+  }
+
 module.exports = { createUser };
