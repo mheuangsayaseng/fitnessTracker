@@ -32,4 +32,23 @@ async function getAllRoutines() {
   }
 }
 
+async function getRoutineById({routineId})
+  try {
+    const {
+      rows: [routine],
+    } = await client.query(
+      `
+      SELECT creator_id, is_public, name, goal
+      FROM routines
+      WHERE id=${routineId}
+      `);
+      if (!routine) {
+        return null;
+      
+      return routine;
+    } catch (error) {
+      throw error;
+    }
+
+
 module.exports = { createRoutine };
