@@ -75,7 +75,7 @@ async function getRoutineById(id) {
         FROM routine
         FULL OUTER JOIN routines_activities
         ON routines.id = routine_activities.routine_id
-        FULLL OUTER JOIN activities
+        FULL OUTER JOIN activities
         ON activities.id = routine_activities.activity_id
         GROUP BY routines.id, routine_activities.routine_id
       `);
