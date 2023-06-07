@@ -1,11 +1,6 @@
 const client = require("./client");
 
-const {
-  createUser,
-  getUser,
-  getUserById,
-  getUserByUsername,
-} = require("./adapters/users");
+const { createUser } = require("./adapters/users");
 
 const {
   users,
@@ -47,8 +42,9 @@ async function createTables() {
         id SERIAL PRIMARY KEY,
         creator_id INTEGER REFERENCES users(id),
         is_public BOOLEAN DEFAULT false,
-        name VARCHAR(255) UNIQUE NOT NULL,
-        goal TEXT NOT NULL
+        name VARCHAR(255) NOT NULL,
+        goal TEXT NOT NULL,
+        UNIQUE(creator_id, name)
       );
 
       CREATE TABLE activities(
@@ -59,11 +55,12 @@ async function createTables() {
 
       CREATE TABLE routine_activities(
         id SERIAL PRIMARY KEY,
-        routine_id INTEGER UNIQUE REFERENCES routines (id),
-        activity_id INTEGER UNIQUE REFERENCES activities (id),
+        routine_id INTEGER REFERENCES routines (id),
+        activity_id INTEGER REFERENCES activities (id),
         duration INTEGER,
-        count INTEGER
-      )
+        count INTEGER,
+        UNIQUE(routine_id, activity_id)
+      );
     `);
   } catch (error) {
     console.log(error);
