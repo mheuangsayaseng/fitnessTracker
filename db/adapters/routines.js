@@ -23,7 +23,27 @@ async function getAllRoutines() {
   try {
     const { rows } = await client.query(
       `
-        SELECT * FROM routine;
+        SELECT
+          routines.id as id,
+          routines.name as name,
+          routines.goal as goal,
+          CASE WHEN routine_activities.routines_id IS NULL THEN '[]'::json
+          ELSE
+          JSON_AGG(
+            JSON_BUILD_OBJECT(
+              'id', activities.id,
+              'name', activities.name,
+              'description', activities.description,
+              'duration', routine_activities.duration,
+              'count', routine_activities.count
+            )
+          ) END AS activities
+          FROM routines
+          FULL OUT JOIN routine_activities
+          ON routines.id = routine_activities.routine_id
+          FULL OUTER JOIN activities
+          ON activities.id = routine_activities.activity_id
+          GROUP BY routines.id, routine_activities.routine_id
     `
     );
     return rows;
@@ -32,23 +52,38 @@ async function getAllRoutines() {
   }
 }
 
-async function getRoutineById({routineId})
+async function getRoutineById(id) {
   try {
     const {
       rows: [routine],
     } = await client.query(
       `
-      SELECT creator_id, is_public, name, goal
-      FROM routine
-      WHERE id=${routineId};
+      SELECT 
+        routines.id as id,
+        routines.name as name,
+        routines.goal as goal,
+        CASE WHEN routine_activities.routine_id IS NULL THEN '[]'::json
+        ELSE
+        JSON_AGG(
+          JSON_BUILD_OBJECT(
+            'id', activities.id,
+            'name', activities.name,
+            'description', activities.description,
+            'count', routine_activities.count,
+          )
+        ) END AS activities
+        FROM routine
+        FULL OUTER JOIN routines_activities
+        ON routines.id = routine_activities.routine_id
+        FULLL OUTER JOIN activities
+        ON activities.id = routine_activities.activity_id
+        GROUP BY routines.id, routine_activities.routine_id
       `);
-      if (!routine) {
-        return null;
-      
-      return routine;
+      return rows;
     } catch (error) {
       throw error;
     }
+}
 
     async function getRoutinesWithoutActivities()
       try {
