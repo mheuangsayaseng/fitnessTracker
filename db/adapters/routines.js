@@ -92,12 +92,11 @@ async function getRoutineById(id) {
       } = await client.query(
         `
         SELECT *
-        FROM routine
-        RETURNING *;
+        FROM routines;
         `
       );
 
-      return routine();
+      return routine;
 
       } catch (error) {
         throw error;
