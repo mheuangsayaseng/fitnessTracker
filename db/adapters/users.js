@@ -1,4 +1,5 @@
 const client = require("../client");
+const bcrypt = require("bcrypt");
 
 async function createUser({ username, password }) {
   const {
@@ -15,19 +16,18 @@ async function createUser({ username, password }) {
   return user;
 }
 
-async function getUser({ username, password }) {}
-
-async function getUserById(id) {
-  const {
-    rows: [user],
-  } = await client.query(
-    `
-      SELECT id
-      FROM users
-      WHERE id=${id}
-    `
-  );
-  return user;
+async function getUser({ username, password }) {
+  try {
+    const {
+      rows: [user],
+    } = await client.query(
+      `
+      SELECT * FROM users
+      WHERE username=$1
+      `,
+      [username]
+    );
+  } catch (error) {}
 }
 
 async function getUserById(id) {
@@ -49,17 +49,21 @@ async function getUserById(id) {
 }
 
 async function getUserByUsername(username) {
-  const {
-    rows: [user],
-  } = await client.query(
-    `
-      SELECT *
-      FROM users
-      WHERE username=$1
-    `,
-    [username]
-  );
-  return user;
+  try {
+    const {
+      rows: [user],
+    } = await client.query(
+      `
+    SELECT *
+    FROM users
+    WHERE username=$1;
+    `[username]
+    );
+    return user;
+  } catch (error) {
+    console.error("Error getting username");
+    throw error;
+  }
 }
 
 module.exports = {
