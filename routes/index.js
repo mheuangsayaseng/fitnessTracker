@@ -10,4 +10,7 @@ router.get("/health", (req, res, next) => {
 
 // Hook up other Routers ex: router.use('/users', require('./users'))
 
+router.use("/users", require("./users"));
+router.use("/auth", require("./auth"));
+
 module.exports = router;
